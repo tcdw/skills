@@ -1,6 +1,10 @@
 ---
 name: atlassian-cli
-description: Use when working with Jira or Confluence from the command line via acli — auth, JQL search, bulk operations, sprint reports, creating/updating issues.
+description: |
+  USE THIS FIRST for Jira, Confluence, Atlassian Cloud, atlassian.net URLs,
+  /browse/PROJECT-123 links, and Jira issue keys like DEV-19747.
+  Do NOT use fetch, glab and other tools for Jira issue keys or atlassian.net URLs.
+  Provides acli commands for viewing/searching/updating Jira workitems and Confluence pages.
 ---
 
 # Atlassian CLI (acli)
