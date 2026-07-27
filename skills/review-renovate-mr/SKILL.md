@@ -1,6 +1,7 @@
 ---
 name: review-renovate-mr
 description: Use this skill when reviewing Renovate-generated dependency upgrade Merge Requests `feature/renovate-*`. Assess changelogs, breaking changes, compatibility, and project impact before deciding whether the MR is safe to merge.
+disable-model-invocation: true
 ---
 
 # review-renovate-mr
