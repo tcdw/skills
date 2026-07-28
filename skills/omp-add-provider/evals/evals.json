@@ -1,0 +1,65 @@
+{
+  "skill_name": "omp-add-provider",
+  "evals": [
+    {
+      "id": 1,
+      "name": "opencode-fragment-to-models-yml",
+      "prompt": "我有一段不完整的 opencode provider 配置，想加进 oh-my-pi。baseURL 是 https://api.example-relay.test/v1，apiKey 用环境变量 EXAMPLE_RELAY_KEY（先别真的调网络），模型先配 gpt-5.4 和 gpt-5.4-mini。片段里只有名字和 limit（context 1050000/400000，output 128000），store:false，variants low/medium/high/xhigh。请按 omp 的方式写好 models.yml 里的 provider 段（合并进现有结构的示例即可），并从 models.dev 补全 cost/reasoning 等信息。不要用真实第三方域名发请求；网络只允许 models.dev。最后说明怎么 omp models / 冒烟。",
+      "expected_output": "A models.yml provider block with a dedicated id (not hijacking openai), openai-compatible api, supportsStore true, two models with context/maxTokens/cost/thinking from models.dev+fragment, and verification steps.",
+      "files": [],
+      "assertions": [
+        "Uses a dedicated provider id instead of shadowing built-in openai",
+        "Sets apiKey to env name EXAMPLE_RELAY_KEY (not a literal secret)",
+        "Maps store:false to compat.supportsStore: true",
+        "Includes both gpt-5.4 and gpt-5.4-mini with fragment context/output limits",
+        "Fills cost fields from models.dev (non-zero plausible values)",
+        "Sets thinking efforts covering low/medium/high/xhigh",
+        "Documents omp models and smoke-test commands"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "anthropic-proxy-with-strict-tools",
+      "prompt": "帮我在 omp 里加一个 Anthropic 兼容中转：baseUrl https://claude-proxy.example.test/v1，key 环境变量 CLAUDE_PROXY_KEY，模型 claude-sonnet-4（context 200k，output 16k）。这是第三方代理。给出 models.yml 片段和需要注意的 disableStrictTools 等点，并说明为什么不要直接改 anthropic 内置 provider。",
+      "expected_output": "Separate provider id, api anthropic-messages, disableStrictTools true, authHeader, model entry, rationale for not shadowing built-in anthropic.",
+      "files": [],
+      "assertions": [
+        "Uses a dedicated provider id, not built-in anthropic",
+        "Sets api: anthropic-messages",
+        "Sets disableStrictTools: true",
+        "Uses CLAUDE_PROXY_KEY as apiKey env reference",
+        "Model contextWindow 200000 and maxTokens 16384 (or 16k-equivalent)",
+        "Explains why not to override built-in anthropic provider"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "responses-400-fallback",
+      "prompt": "我已经把自定义 provider `broken-relay` 配成 api: openai-responses 了，但 omp 冒烟时报 400 Unsupported parameter: max_output_tokens，日志在讲 responses 请求。key 和 baseUrl 都对，chat/completions 用 curl 是好的。请按 omp-add-provider 的排障路径告诉我 models.yml 应该怎么改，并给出验证命令。",
+      "expected_output": "Diagnose Responses incompleteness, switch to openai-completions (or omit max tokens), mention reading http-400 dump, smoke test command.",
+      "files": [],
+      "assertions": [
+        "Identifies max_output_tokens / incomplete Responses support as the cause",
+        "Recommends switching api to openai-completions (primary fix)",
+        "Mentions checking ~/.omp/logs/http-400-requests dump or equivalent",
+        "Provides a concrete smoke-test omp command",
+        "YAML snippet shows api: openai-completions for broken-relay"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "linux-key-storage-no-keychain",
+      "prompt": "我在 Ubuntu 服务器上用 omp（没有 GUI，也没有 macOS Keychain）。想加一个 OpenAI 兼容中转：baseUrl https://relay.example.test/v1，模型 gpt-5.4-mini（context 400000，output 128000）。key 我等下自己填。请给出 models.yml 片段，并说明 key 应该放哪、怎么让 omp 读到。",
+      "expected_output": "Provider block using an env var NAME for apiKey (no !security), the export line and where to put it, plus an optional !cat/pass alternative and verification commands.",
+      "files": [],
+      "assertions": [
+        "Does NOT emit a !security / macOS Keychain recipe",
+        "Uses an env var name (e.g. RELAY_API_KEY) as apiKey",
+        "Shows the export line and where to place it (shell rc / systemd / environment.d)",
+        "Notes the env var must exist in the environment omp is launched from",
+        "Any alternative (pass / secret-tool / !cat) is gated on the tool being installed",
+        "Includes omp models and smoke-test verification commands"
+      ]
+    }
+  ]
+}
