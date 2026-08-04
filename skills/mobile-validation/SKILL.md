@@ -1,5 +1,5 @@
 ---
-name: verify-on-device
+name: mobile-validation
 description: 在 React Native 项目的真实设备或模拟器上验证当前改动。仅在用户明确调用时使用，不自动触发。
 disable-model-invocation: true
 ---

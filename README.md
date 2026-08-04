@@ -10,7 +10,7 @@ The repository is intentionally structured around the portable `skills/<skill-na
 
 ```text
 skills/
-  example-skill/
+  omp-add-provider/
     SKILL.md
 docs/
   authoring.md
@@ -20,8 +20,8 @@ Each skill lives in its own directory and must include a `SKILL.md` file with fr
 
 ```markdown
 ---
-name: example-skill
-description: Use when the user needs a concrete example skill skeleton.
+name: omp-add-provider
+description: Use when the user wants to add or configure a model provider.
 ---
 ```
 
@@ -78,4 +78,11 @@ See `docs/authoring.md` for the local conventions used when adding or editing sk
 
 ## Available Skills
 
-No production skills yet. Use `skills/example-skill` as a template, then remove it when real skills exist.
+| Skill | 一句话介绍 |
+| --- | --- |
+| `atlassian-cli` | 通过 `acli` 命令行查看、搜索、更新 Jira issue 和 Confluence 页面。 |
+| `comment-why-not-what` | 注释纪律：只写解释 Why 的注释、禁止复述 What/How，写注释或 review 注释时使用。 |
+| `just-do-it` | 把任务执行到底而不是停在分析阶段，用于「帮我升级依赖 / 重构 / 修复」等有明确交付预期的任务。 |
+| `omp-add-provider` | 为 oh-my-pi (omp) 配置第三方模型提供商，包括 OpenAI 兼容中转、Anthropic 代理、双 key 网关等。 |
+| `review-renovate-mr` | 以资深前端工程师视角审查 Renovate 生成的 `feature/renovate-*` 依赖升级 MR。 |
+| `mobile-validation` | 在 React Native 项目的真实设备或模拟器上运行并验证当前改动。 |
