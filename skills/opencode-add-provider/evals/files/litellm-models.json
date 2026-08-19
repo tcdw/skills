@@ -1,0 +1,25 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "grok-4.6-account1",
+      "object": "model",
+      "owned_by": "openai"
+    },
+    {
+      "id": "grok-build-0.1-account1",
+      "object": "model",
+      "owned_by": "openai"
+    },
+    {
+      "id": "grok-imagine-image-2.0-account1",
+      "object": "model",
+      "owned_by": "openai"
+    },
+    {
+      "id": "grok-imagine-video-1.5-account1",
+      "object": "model",
+      "owned_by": "openai"
+    }
+  ]
+}

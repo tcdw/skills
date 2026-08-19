@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "northstar": {
+      // This package was guessed before either wire was tested.
+      "npm": "@ai-sdk/openai",
+      "name": "Northstar",
+      "options": {
+        "baseURL": "https://northstar.example.test/v1",
+        "apiKey": "{env:NORTHSTAR_API_KEY}",
+      },
+      "models": {
+        "northstar-coder-route2": {
+          "name": "Northstar Coder",
+        },
+      },
+    },
+  },
+  "agent": {
+    "explore": {
+      "model": "opencode-go/deepseek-v4-flash",
+    },
+  },
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Keep the user's existing providers and formatting.
+  "provider": {
+    "local-lab": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Lab",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1",
+      },
+      "models": {
+        "local-coder": {
+          "name": "Local Coder",
+        },
+      },
+    },
+  },
+  "small_model": "opencode-go/deepseek-v4-flash",
+  "share": "disabled",
+}

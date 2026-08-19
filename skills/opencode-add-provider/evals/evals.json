@@ -1,0 +1,58 @@
+{
+  "skill_name": "opencode-add-provider",
+  "evals": [
+    {
+      "id": 1,
+      "name": "litellm-alias-metadata-and-media-filter",
+      "prompt": "A LiteLLM relay should be added to the provided existing-opencode.jsonc without modifying that input file. The provider id is frost, display name Frost Relay, baseURL is https://frost-relay.example.test/v1, and the API key is already supplied to OpenCode through the environment variable FROST_API_KEY. The relay's authenticated /models response is provided in litellm-models.json, so do not contact the fake relay. Network access is allowed only for current OpenCode schema/docs and https://models.dev/api.json. Import only text/agent models, enrich them from models.dev when a trustworthy upstream match exists, and preserve the exact relay ids used for requests even if a repeated routing suffix must be removed for metadata lookup. Save the merged configuration as opencode.jsonc and a concise explanation/verification plan as report.md in the requested output directory. Preserve all existing providers, comments, trailing commas, and unrelated settings.",
+      "expected_output": "A preserved JSONC config with a dedicated frost provider using @ai-sdk/openai-compatible and {env:FROST_API_KEY}; the two text models retain -account1 relay ids and receive trustworthy xAI metadata, while image/video models are excluded; report explains matching, pricing caveat, safe validation, smoke, and restart.",
+      "files": [
+        "evals/files/existing-opencode.jsonc",
+        "evals/files/litellm-models.json"
+      ],
+      "assertions": [
+        "The output config preserves local-lab, its JSONC comment, small_model, share, and trailing-comma style",
+        "The frost provider uses @ai-sdk/openai-compatible, the exact baseURL, and {env:FROST_API_KEY} without a raw secret",
+        "The config includes exactly the two text relay ids grok-4.6-account1 and grok-build-0.1-account1 and excludes both grok-imagine routes",
+        "Both imported models contain trustworthy first-party xAI limits, modalities, and non-zero upstream costs; grok-4.6 includes low/medium/high/xhigh variants",
+        "The report explains that -account1 is removed only for metadata lookup, preserves request ids, and warns that relay pricing may differ",
+        "The report includes model-list and concrete text-model smoke commands plus an OpenCode restart reminder"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "responses-400-chat-completions-fallback",
+      "prompt": "Repair the custom provider in the provided responses-broken.jsonc using the evidence in wire-probe.md. Do not call the fake endpoint and do not modify either input file. The provider must continue using its dedicated id northstar, baseURL, NORTHSTAR_API_KEY environment reference, and exact relay model id. Select the OpenCode AI SDK package that matches the working wire instead of the model family or the existing guess. Save the repaired full config as opencode.jsonc and the diagnosis plus safe validation/smoke commands as report.md in the requested output directory. Preserve the rest of the JSONC file.",
+      "expected_output": "The northstar provider changes from @ai-sdk/openai to @ai-sdk/openai-compatible because Chat Completions succeeded and Responses rejected max_output_tokens; config preserves env interpolation and unrelated fields; report includes suppressed config validation, model listing, smoke, and restart.",
+      "files": [
+        "evals/files/responses-broken.jsonc",
+        "evals/files/wire-probe.md"
+      ],
+      "assertions": [
+        "The northstar provider changes npm to @ai-sdk/openai-compatible while preserving its dedicated id, baseURL, env reference, exact model id, comment, and unrelated agent config",
+        "The report identifies the successful Chat Completions probe and the Responses max_output_tokens 400 as the reason for changing SDKs",
+        "The output does not add store:false, replace the relay model id, shadow a built-in provider, or materialize a raw key",
+        "The report validates config with opencode debug config while suppressing resolved output and lists models with opencode models northstar",
+        "The report provides a concrete opencode run smoke command selecting northstar/northstar-coder-route2 and expecting provider-ok",
+        "The report reminds the user to restart existing OpenCode sessions after installing the repaired config"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "anthropic-relay-dedicated-id-jsonc-merge",
+      "prompt": "Add an Anthropic Messages-compatible third-party relay to the provided anthropic-existing.jsonc without modifying that input file. Use provider id claude-lane, display name Claude Lane, baseURL https://claude-lane.example.test/v1, API key environment variable CLAUDE_LANE_API_KEY, and relay model id claude-sonnet-4-5-route7. The service documentation states that this endpoint implements Anthropic /messages, and the routing suffix -route7 maps only for metadata lookup to upstream claude-sonnet-4-5. Do not contact the fake relay. Network access is allowed only for current OpenCode schema/docs and models.dev. Save the merged config as opencode.jsonc and a report.md in the requested output directory. Keep the existing built-in anthropic configuration unchanged, retain comments/trailing commas/unrelated settings, preserve the full relay model id, and never materialize a raw secret.",
+      "expected_output": "A dedicated claude-lane provider using @ai-sdk/anthropic and {env:CLAUDE_LANE_API_KEY}, with full relay model id and supported metadata copied from the first-party Anthropic catalog; built-in anthropic and all existing JSONC content remain intact; report gives safe verification and restart guidance.",
+      "files": [
+        "evals/files/anthropic-existing.jsonc"
+      ],
+      "assertions": [
+        "The output keeps the built-in anthropic override, local-lab provider, JSONC comment/trailing commas, and disabled_providers unchanged",
+        "A separate claude-lane provider uses @ai-sdk/anthropic, the exact baseURL, and {env:CLAUDE_LANE_API_KEY} without a raw secret",
+        "The model key remains claude-sonnet-4-5-route7 and is not replaced by the upstream metadata id",
+        "The model contains schema-supported first-party Anthropic metadata including capabilities, modalities, 1000000/64000 limits, and non-zero costs",
+        "The report explains route7 normalization is metadata-only, ranks first-party Anthropic over aggregators, and warns relay pricing may differ",
+        "The report names the selection claude-lane/claude-sonnet-4-5-route7, describes validation without contacting the fake relay, and includes a restart reminder"
+      ]
+    }
+  ]
+}
