@@ -78,6 +78,15 @@ Every color declaration is paired: `text-primary-600 dark:text-primary-400`, `bg
 - Banned styles: glow, exaggerated gradients, SaaS-landing-page look — and **editorial print pastiche**, for the same reason. Both are costumes.
 - Prefer whitespace and a single card edge over dividers; drop hairline column separators and let the grid gap work.
 
+## Icons
+
+- Two sets, split by role, never mixed for variety: **Simple Icons** (`simple-icons:github`, `simple-icons:x`) for brand marks, **Remix Icon** (`ri:mail-line`, `ri:global-line`) for generic UI glyphs. Both load through `astro-icon` + the matching `@iconify-json/*` package.
+- Brand marks come from the brand set so they are the official logo, not a UI designer's interpretation of it. Accept that some official logos are solid badges (YouTube's rounded rectangle, Telegram's circle) while others are bare glyphs — that weight difference is inherent to the brands and is not worth "fixing" by redrawing them.
+- Pick a generic glyph's `-fill` / `-line` variant to match the weight of its neighbours **in that list**: outline next to bare brand glyphs, solid next to a solid brand badge. The variant is a per-list decision, not a global one.
+- Size icons in `em` (`size-[1.15em]`) so they track the surrounding type scale instead of pinning to a px value.
+- An icon replacing a text label must keep the label as `sr-only` text.
+- Icon names live in the data file, never inline in the template — swapping an icon should not touch markup.
+
 ## Spacing
 
 - When in doubt, go one step looser. Density is not the goal; breathing is.
