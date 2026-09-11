@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Agent Docs"
+  short_description: "为仓库生成 AGENTS.md 与 agent-doc 检索式文档体系"
+  default_prompt: "使用 $create-agent-docs 为这个项目创建面向 Coding Agent 的文档体系（AGENTS.md + agent-doc/）。"
