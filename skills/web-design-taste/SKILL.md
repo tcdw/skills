@@ -1,23 +1,17 @@
 ---
 name: web-design-taste
-description: tcdw's personal visual design language for web and React Native UI — semantic primary/accent color aliases over raw Tailwind palettes (accent opt-in, often zero), system sans-serif typography with no decorative English, generous radii and spacing, per-breakpoint recomposition, print-aware links, low-alpha identity artwork, and launch assets (favicon, OG card) reused from the blog. Use when designing, styling, or restyling any page, screen, or component for tcdw, when preparing a page to ship, and when reviewing a visual draft before presenting it. Do NOT use for copywriting or information architecture decisions.
+description: A restrained, rounded, roomy visual design language for web and React Native UI — semantic primary/accent/secondary color roles over raw Tailwind palettes (accent opt-in, often zero), system sans-serif typography with no decorative bilingual labels, generous radii and spacing, per-breakpoint recomposition, print-aware links, faint identity artwork, and complete launch assets (favicon set, OG card). Use when designing, styling, or restyling any page, screen, or component, when preparing a page to ship, and when reviewing a visual draft before presenting it. Do NOT use for copywriting or information architecture decisions.
 ---
 
-# Web Design Taste (tcdw)
+# Web Design Taste
 
 > Restrained, rounded, roomy. Color is semantic and rare. Decoration that only signals "designed" gets cut; decoration that carries identity stays, faintly.
 
-## Reference Implementations
+## Ground Rules
 
-Read these before proposing a new visual direction; they are the baseline, not this document:
-
-| Project | Stack | What it establishes |
-| --- | --- | --- |
-| `blog` | Astro + Tailwind v4 | The canonical `@theme` block, dark mode, banner/backdrop composition, the favicon set |
-| `bilisound` | Expo + NativeWind + gluestack-ui | Semantic token roles, radius vocabulary, interaction states |
-| `im.tcdw.net` | Astro + Tailwind v4 | The same `@theme` on a single dense page: responsive recomposition, print, decorative artwork, OG card |
-
-Explicit instructions in the current conversation win over this file. When tcdw overrides a rule here, that is new evidence — offer to update this skill.
+- These rules describe a design language, not a particular site. They apply to any project, personal or not.
+- The language was distilled from shipped public projects — see [Evidence](#evidence) for the list. If one of them is cloned locally (typically `~/Projects/<name>`), read it before proposing a new visual direction: a shipped page outranks this document as a baseline. If none is available, follow the rules as written; nothing here requires those repos to exist.
+- Explicit instructions in the current conversation outrank this file. When the user overrides a rule here, that is new evidence — offer to update this skill.
 
 ## Color
 
@@ -36,32 +30,31 @@ There are exactly three roles:
 
 | Role | Base palette | Used for |
 | --- | --- | --- |
-| `primary-*` | per-project hue (sky / teal) | Identity, links, hover, list markers, every emphasis by default |
-| `accent-*` | per-project hue (amber / blue) | Optional. A second kind of emphasis that must be told apart from primary on the same screen — the *currently playing* item |
+| `primary-*` | the project's identity hue (sky / teal / …) | Identity, links, hover, list markers, every emphasis by default |
+| `accent-*` | a second hue, opted into only when needed (amber / blue / …) | Optional. A second kind of emphasis that must be told apart from primary on the same screen — e.g. the *currently playing* item |
 | `secondary-*` | **always gray** | Everything neutral: body text, borders, surfaces, disabled and muted states |
 
-- The **structure** is fixed; the **palette is per-project**. `blog` and `im.tcdw.net` map primary→sky, accent→amber; `bilisound` uses a teal primary (`#00BA9D`) with a blue accent. Retheming must be a one-line change, never a find-and-replace across templates.
-- **`accent-*` is opt-in, and zero is a normal outcome.** Reach for `primary-*` first. On `im.tcdw.net` accent went from orange-everywhere (first draft) → three marks (motto, project kind, hover) → **none**: the shipped page is primary + secondary only. Keep the alias defined so it is one line away, but don't spend it unless there are genuinely two kinds of emphasis to distinguish.
+- The **structure** is fixed; the **palette is per-project**. Retheming (primary→teal, accent→blue) must be a one-line change, never a find-and-replace across templates.
+- **`accent-*` is opt-in, and zero is a normal outcome.** Reach for `primary-*` first. A first draft may splash accent everywhere; trimming it to a few marks, then to none, is a normal end state — a shipped page can be primary + secondary only. Keep the alias defined so it is one line away, but don't spend it unless there are genuinely two kinds of emphasis to distinguish.
 - When accent is used it is **never a large area**. It marks one thing.
-- `secondary-*` is essentially always a **gray ramp**, and it stays gray across projects even when primary and accent are rethemed. Naming it `secondary` rather than `gray` keeps the neutral swappable in one place and lets dark mode flip the whole ramp (`bilisound` flips secondary 0↔950 exactly like primary).
-- Write `secondary-*` rather than a naked `gray-*` wherever the alias exists. `blog` still writes `gray-*` directly — that is drift to clean up, not a counter-example. Never `slate`/`zinc`.
-- In the RN app the same roles also appear as gluestack's finer-grained tokens (`typography-*`, `background-*`, `outline-*`); use those there.
+- `secondary-*` is essentially always a **gray ramp**, and stays gray even when primary and accent are rethemed. Naming it `secondary` rather than `gray` keeps the neutral swappable in one place and lets dark mode flip the whole ramp (950↔0) instead of hand-picking values.
+- Write `secondary-*` rather than a naked `gray-*` wherever the alias exists. A naked `gray-*` next to `secondary-*` is drift to clean up, not a counter-example. Never `slate`/`zinc`.
+- In a React Native / gluestack-ui app the same roles also appear as that library's finer-grained tokens (`typography-*`, `background-*`, `outline-*`); use those there.
 - Color is for *text marks*, not areas. A tinted chip keeps neutral text (`bg-primary-50` + `text-secondary-800`).
 - De-emphasize with `opacity-60`, not by inventing a lighter gray.
 - No tinted zone backgrounds, no accent bar across the top of a card, no colored section rules.
 
 ### Dark mode is first class
 
-Every color declaration is paired: `text-primary-600 dark:text-primary-400`, `bg-white dark:bg-gray-950`. `bilisound` goes further and **flips the entire ramp** (950↔0) rather than hand-picking dark values. A design with no dark story is unfinished — say so rather than shipping it silently.
+Every color declaration is paired: `text-primary-600 dark:text-primary-400`, `bg-white dark:bg-gray-950`. Flipping the entire ramp (950↔0) is a stronger, more mechanical alternative to hand-picking dark values. A design with no dark story is unfinished — say so rather than shipping it silently.
 
-The one shipped exception is the print-first `im.tcdw.net` sheet, which is light-only and says so with `html { color-scheme: light }`. If a page is going light-only, make it that explicit and mention it when presenting; don't let it happen by omission.
+The one legitimate exception is a **print-first, light-only sheet**: make it explicit with `html { color-scheme: light }` and mention it when presenting; don't let light-only happen by omission.
 
 ## Typography
 
-- **System sans-serif by default.** Unless tcdw names a font for the project, don't add a web font or override Tailwind's default `--font-sans`. Don't reach for a serif display face to look "designed" — that was part of the editorial costume stripped from the first `im.tcdw.net` draft.
+- **System sans-serif by default.** Unless a font is named for the project, don't add a web font or override Tailwind's default `--font-sans`. Don't reach for a serif display face to look "designed" — that is editorial costume.
 - **When a web font is requested, it must actually load.** Putting a face in `--font-sans` does nothing on machines without it installed. Ship its stylesheet, at low priority so the system fallback paints first (`<link rel="stylesheet" fetchpriority="low" … crossorigin>`), and keep system fonts (`-apple-system`, `"Microsoft YaHei"`, `sans-serif`) at the end of the stack.
-
-- **No decorative English.** No bilingual headings, no `Who` / `Now` / `Stack` micro-labels beside a Chinese title, no `A 5-Minute Intro` kickers.
+- **No decorative English.** On a Chinese page, no bilingual headings, no `Who` / `Now` / `Stack` micro-labels beside a Chinese title, no `A 5-Minute Intro` kickers.
 - **No `uppercase` and no wide `tracking-[0.2em+]` as ornament.** Small-caps-ish label styling is a tell of template design. Light tracking (`0.12–0.16em`) on tiny CJK labels has survived every pass and is fine.
 - A section heading is a bold Chinese title and nothing else — no rule line, no color block, no counter.
 - `body { text-autospace: normal }` wherever CJK and Latin mix.
@@ -78,7 +71,7 @@ The one shipped exception is the print-first `im.tcdw.net` sheet, which is light
   ```
 
 - Default page surface: white card, `rounded-2xl`, soft shadow, on a lightly tinted background — **at wide breakpoints only**. On a phone the card chrome is dropped (`sheet:rounded-2xl sheet:shadow-2xl`) and the page is full-bleed white; a floating card in a 400px viewport just wastes the narrowest dimension.
-- `backdrop-blur` is allowed **over imagery** (blog's `bg-white/80 dark:bg-gray-950/70 backdrop-blur-xl` panel over a photographic banner). It is not generic decoration — no glassmorphism on a flat background.
+- `backdrop-blur` is allowed **over imagery** (a `bg-white/80 dark:bg-gray-950/70 backdrop-blur-xl` panel over a photographic banner). It is not generic decoration — no glassmorphism on a flat background.
 - No borders on images. No paper/newspaper pastiche (off-white paper tints, top rules, `#fffdfa`).
 - Banned styles: glow, exaggerated gradients, SaaS-landing-page look — and **editorial print pastiche**, for the same reason. Both are costumes.
 - Prefer whitespace and a single card edge over dividers; drop hairline column separators and let the grid gap work.
@@ -86,13 +79,13 @@ The one shipped exception is the print-first `im.tcdw.net` sheet, which is light
 
 ## Imagery
 
-- **Raster images go through the framework's image pipeline**, never raw from `public/`. In Astro: `src/assets/` + `<Image>` from `astro:assets`, `width` set to the displayed CSS size, `densities={[1, 2]}`. The corner artwork's 6MB source ships as 11KB/28KB webp.
+- **Raster images go through the framework's image pipeline**, never raw from `public/`. In Astro: `src/assets/` + `<Image>` from `astro:assets`, `width` set to the displayed CSS size, `densities={[1, 2]}`. A 6MB source ships as an 11KB/28KB webp pair — that is the point.
 - Binaries — `*.png`, `*.jpg`, `*.ico`, and design sources like `*.af` — go in Git LFS. Keep the design source (`design/open-graph.af`) committed next to its export.
 - Once a real asset exists, delete its placeholder branch (the dashed "Avatar" box). Scaffolding is not a feature.
 
 ### Identity artwork
 
-Decoration is allowed when it **carries identity** — tcdw's persona illustration (雪乃碗) — never as generic ornament. Recipe, as shipped:
+Decoration is allowed when it **carries identity** — a mascot or persona illustration, a personal mark — never as generic ornament. Recipe, as shipped:
 
 ```astro
 <div class="sheet relative isolate overflow-hidden …">
@@ -103,7 +96,7 @@ Decoration is allowed when it **carries identity** — tcdw's persona illustrati
 ```
 
 - **Watermark opacity.** Tuned by hand 10 → 5 → 8 → **7%**. Start at 7 and move in 1% steps; above ~10% it competes with text.
-- **Size it large.** Desktop width went 300 → 540 → **480px**. A small corner sticker reads as clip-art; a large faint figure reads as atmosphere.
+- **Size it large.** Desktop width settled at **480px** after 300 and 540. A small corner sticker reads as clip-art; a large faint figure reads as atmosphere.
 - **Transparent cut-out, not a scene.** A JPG with a floor and wall shadow was replaced by an RGBA PNG of the figure alone.
 - `isolate` + `-z-10` puts it above the card's white but below the text; `overflow-hidden` keeps it inside the rounded corner; `alt=""` + `aria-hidden` + `pointer-events-none` make it inert.
 - Use the **same illustration** across the page and its OG card so the share preview and the landing agree.
@@ -126,13 +119,13 @@ Decoration is allowed when it **carries identity** — tcdw's persona illustrati
 
 ## Responsive: recompose, don't just stack
 
-- An element may **move** between breakpoints. The avatar is a small `rounded-full w-16` beside the name in the mobile header, and a large `rounded-xl w-26` at the top of the sidebar on wide. Render it twice (`sheet:hidden` / `hidden sheet:block`) rather than contorting one element into both roles.
+- An element may **move** between breakpoints. An avatar is a small `rounded-full w-16` beside the name in the mobile header, and a large `rounded-xl w-26` at the top of the sidebar on wide. Render it twice (`sheet:hidden` / `hidden sheet:block`) rather than contorting one element into both roles.
 - Wide-layout devices get the breakpoint prefix: right alignment (`sheet:text-end`), the rule under a header row (`sheet:border-b`), card chrome. On mobile, text is start-aligned and flows.
 - Test the phone layout as its own design, not as the desktop squeezed.
 
 ## Print
 
-Only when a page has a print form (the `im.tcdw.net` sheet is A4 landscape, strictly one page).
+Only when a page has a print form (e.g. a strictly one-page A4 landscape sheet).
 
 - One custom variant covers "the wide composition" on both wide screens and paper, so print never falls back to the mobile single column:
 
@@ -154,13 +147,13 @@ Only when a page has a print form (the `im.tcdw.net` sheet is A4 landscape, stri
 
 - Every color change carries `transition-colors`, usually `duration-200`.
 - Touch targets are `size-12` circles: `rounded-full bg-white/0 active:bg-white/10`. Feedback lives on `active:` for touch, `hover:` for pointer.
-- Hover changes **color** — of the text, or of an existing underline's decoration — and never toggles an underline on or off. On `im.tcdw.net` hover goes to `primary-*`, consistent with accent being unused.
+- Hover changes **color** — of the text, or of an existing underline's decoration — and never toggles an underline on or off. Hover resolves to `primary-*`, consistent with accent being unused.
 - Link vocabulary, from quietest to loudest:
 
   | Tier | Look | Example |
   | --- | --- | --- |
   | Title link | neutral text that tints on hover: `text-secondary-900 hover:text-primary-500` | a project name |
-  | Identity link | `text-primary-800 underline decoration-primary-300 underline-offset-2`, decoration darkens on hover | `@tcdw` |
+  | Identity link | `text-primary-800 underline decoration-primary-300 underline-offset-2`, decoration darkens on hover | an `@handle` |
   | Inline action | `text-primary-700` + leading Remix icon, no chrome | 看看我的简历 |
   | Action chip | `rounded-md border border-primary-200 px-2 py-0.5 text-primary-700 hover:bg-primary-50` + `ri:arrow-right-up-line` | 了解更多 |
 
@@ -183,18 +176,18 @@ Only when a page has a print form (the `im.tcdw.net` sheet is A4 landscape, stri
 ## Copy & Chrome
 
 - No in-page utility buttons duplicating a browser feature (a "Print / PDF" button, an unrequested theme switcher).
-- **Subtract before styling.** A section that repeats information found elsewhere gets deleted, not restyled — `im.tcdw.net` dropped 也做过, 其他 and 适合和我聊 in turn. When a section goes, its layout wrapper and its now-unused tokens (`--fs-num`) go in the same change.
+- **Subtract before styling.** A section that repeats information found elsewhere gets deleted, not restyled. When a section goes, its layout wrapper and its now-unused tokens (`--fs-num`) go in the same change.
 - Punctuation: ASCII `-`, not `—` / `–`. No trailing `。` on a short standalone line (taglines, captions, list items).
-- Footer form: `© {year} tcdw | Updated {date}` — no uppercase, no `·` separators.
+- Footer form: `© {year} {owner} | Updated {date}` — no uppercase, no `·` separators.
 
 ## Shipping
 
-A page isn't done until its launch assets are tcdw's, not the framework's:
+A page isn't done until its launch assets are the project's own, not the framework's:
 
-- **Favicon set copied from `blog`**: `favicon.svg`, `favicon.ico` with `sizes="any"`, and `apple-touch-icon.png`. Never ship Astro's default icon.
-- **OG card**: hand-made 1200×630 PNG — kicker, big name, role and a one-line stack on the left, the persona illustration on the right, domain at the bottom. A short amber dash above the kicker is the card's only accent mark. Declare `og:image:width/height/alt` (alt describes the illustration), `og:type=profile`, `twitter:card=summary_large_image`, `twitter:creator=@tcdwww`.
+- **Favicon set**: `favicon.svg`, `favicon.ico` with `sizes="any"`, and `apple-touch-icon.png`, built from the project's mark — `tcdw/blog` ships a complete set to copy from when the project shares that identity. Never ship the framework's default icon.
+- **OG card**: hand-made 1200×630 PNG — kicker, big name, role and a one-line stack on the left, the identity illustration on the right, domain at the bottom. A short dash in the accent hue above the kicker is the card's only accent mark. Declare `og:image:width/height/alt` (alt describes the illustration), `og:type=profile`, `twitter:card=summary_large_image`, and `twitter:creator` when the site has an account.
 - Absolute URLs come from `site` in `astro.config.mjs` (`new URL(path, Astro.site)`); add `<link rel="canonical">`.
-- `<title>` and `og:title` are the same string, built from the page's kicker + name (`5 分钟了解 tcdw`).
+- `<title>` and `og:title` are the same string, built from the page's kicker + name (`5 分钟了解 {name}`).
 
 ## Review Checklist
 
@@ -213,9 +206,18 @@ Before showing a design, verify each:
 11. Does every interactive element have `transition-colors` and an `active:`/`hover:` state — and, if the page prints, a paper form?
 12. On a phone: is the card chrome gone, is text start-aligned, did elements move to where they belong rather than just stacking?
 13. Is every raster image going through `<Image>` with `densities`, and is decorative art inert (`alt=""`, `aria-hidden`, `pointer-events-none`) and faint (~7%)?
-14. Favicon, apple-touch-icon and OG card replaced with tcdw's?
+14. Favicon set, `apple-touch-icon` and OG card replaced with the project's own?
 15. Does it look tight? → loosen one step and re-check.
 
 ## Evidence
 
-Consolidated from `blog` and `bilisound` (tcdw's own long-running projects) plus the `im.tcdw.net` profile sheet, from the agent's first draft (`e1b9360`: serif name, orange top bar, `#fffdfa` paper, `mm` everywhere, English kickers) to the shipped site (`c6e9ada`). Commit `7bc93fc` ("Optimize style") is tcdw's hand-restyle that pulled the editorial draft back to this language; `c1a8b70` through `c6e9ada` then removed accent entirely, subtracted three sections, added print-aware links, the corner artwork (hand-tuned in `64122ea`/`40b0633`/`68db419`/`b1cc1c0`), mobile recomposition (`68db419`, `cca76f8`), the image pipeline, actually loading the web font (`aec23b6`), and the blog favicon + OG card (`096a501`, `9b2c66e`). Extend this file when a new project produces a new correction; do not generalize from a single ambiguous edit.
+This design language is distilled from four shipped public GitHub projects, which serve as reference implementations whenever a local clone is at hand (typically `~/Projects/<name>`):
+
+| Project | Stack | What it establishes |
+| --- | --- | --- |
+| `tcdw/koi` | Astro + Tailwind v4 + Svelte | The public blog template the site is built from — the origin of the `@theme` block: `primary-*`/`accent-*` ramps over Tailwind palettes, `text-autospace`, the squircle helper |
+| `tcdw/blog` | Astro + Tailwind v4 | The same `@theme` in a real site: dark mode, banner/backdrop composition, the favicon set |
+| `bilisound/bilisound` | Expo + NativeWind + gluestack-ui | The roles in a React Native app: teal primary (`#00ba9d`), radius vocabulary, interaction states, ramp-flipping dark mode |
+| `tcdw/im.tcdw.net` | Astro + Tailwind v4 | A single dense print-first sheet: responsive recomposition, print-aware links, faint identity artwork, OG card |
+
+Provenance for the rules that cite specific values: the profile sheet went from an agent's first draft (`e1b9360`: serif name, orange top bar, `#fffdfa` paper, `mm` everywhere, English kickers) through a hand-restyle that pulled it back to this language (`7bc93fc`) to the shipped page (`c6e9ada`) — accent removed, three sections subtracted, print-aware links, hand-tuned corner artwork, mobile recomposition, the image pipeline, a web font that actually loads, and a hand-made favicon + OG card. Extend this file when a new project produces a new correction; do not generalize from a single ambiguous edit.
