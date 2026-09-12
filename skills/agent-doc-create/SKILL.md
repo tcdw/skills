@@ -1,5 +1,5 @@
 ---
-name: create-agent-docs
+name: agent-doc-create
 description: "Create and maintain Coding-Agent-friendly documentation for any repository: a root AGENTS.md entry point plus an agent-doc/ directory of task-indexed topic docs (architecture, data layer, verification, operations, glossary, and more), so each agent session reads only the docs a task needs instead of scanning the whole repo. Use when asked to bootstrap or generate agent-facing project docs, create or restructure AGENTS.md or agent-doc/, onboard an agent to a codebase, or refresh stale agent docs after architecture, command, or workflow changes. 适用于为项目创建 AGENTS.md、agent-doc 或面向 Coding Agent 的文档体系，或在架构、命令、工作流变化后更新这些文档。"
 ---
 
