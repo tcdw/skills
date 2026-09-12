@@ -1,0 +1,4 @@
+interface:
+  display_name: "编写使用指南"
+  short_description: "基于源码核对、实际操作与截图，新建或完善面向用户的使用指南"
+  default_prompt: "使用 $write-user-guide 为这个项目新建或完善使用指南，核对真实操作、补充必要截图并验证文档。"
