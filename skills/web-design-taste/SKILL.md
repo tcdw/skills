@@ -1,6 +1,6 @@
 ---
 name: web-design-taste
-description: A restrained, rounded, roomy visual design language for web and React Native UI — semantic primary/accent/secondary color roles over raw Tailwind palettes (accent opt-in, often zero), system sans-serif typography with no decorative bilingual labels, generous radii and spacing, per-breakpoint recomposition, print-aware links, faint identity artwork, and complete launch assets (favicon set, OG card). Use when designing, styling, or restyling any page, screen, or component, when preparing a page to ship, and when reviewing a visual draft before presenting it. Do NOT use for copywriting or information architecture decisions.
+description: A restrained, rounded, roomy visual design language for web and React Native UI — semantic primary/accent/secondary color roles over raw Tailwind palettes (accent opt-in, often zero), system sans-serif typography with no decorative bilingual labels, generous radii and spacing, per-breakpoint recomposition, restrained card panels and quiet charts in dashboards, print-aware links, faint identity artwork, and complete launch assets (favicon set, OG card). Use when designing, styling, or restyling any page, screen, or component, when preparing a page to ship, and when reviewing a visual draft before presenting it. Do NOT use for copywriting or information architecture decisions.
 ---
 
 # Web Design Taste
@@ -74,7 +74,7 @@ The one legitimate exception is a **print-first, light-only sheet**: make it exp
 - `backdrop-blur` is allowed **over imagery** (a `bg-white/80 dark:bg-gray-950/70 backdrop-blur-xl` panel over a photographic banner). It is not generic decoration — no glassmorphism on a flat background.
 - No borders on images. No paper/newspaper pastiche (off-white paper tints, top rules, `#fffdfa`).
 - Banned styles: glow, exaggerated gradients, SaaS-landing-page look — and **editorial print pastiche**, for the same reason. Both are costumes.
-- Prefer whitespace and a single card edge over dividers; drop hairline column separators and let the grid gap work.
+- Prefer whitespace and a single card edge over dividers; drop hairline column separators and let the grid gap work. "A single card edge" is not "no card" — see [Dashboards & Admin Panels](#dashboards--admin-panels) for where removing cards went too far.
 - A thin left rule on a list item (`border-l-2 border-primary-200 pl-4`) is a mark, not a zone, and has survived every pass. What stays banned is a colored bar across a card's top or a rule under a heading.
 
 ## Imagery
@@ -116,6 +116,32 @@ Decoration is allowed when it **carries identity** — a mascot or persona illus
 - Responsive padding comes in pairs: `p-5 md:p-6`, `px-5 md:px-6`. Vertical rhythm is generous: `my-10 md:my-12` between list items.
 - Content sits at the top of a column (`justify-start`); don't `justify-between` a sidebar to smear its groups across the full height.
 - Observed hand-corrections, as calibration: `gap-2 → gap-3`, `pl-3 → pl-4`, `mt-3 → mt-4`, `mt-0.5 → mt-2` between a summary and its detail line, chip `px-1.5 → px-2`, paired columns `gap-0 → gap-6`, sidebar `justify-between → justify-start`.
+
+## Dashboards & Admin Panels
+
+Applies to data-dense apps built on a component library (shadcn/ui and similar): tune the library's defaults rather than replace them.
+
+### Cards: restrained, not removed
+
+- **One frame per page area.** A card groups one area (a status block, a chart group, a table). Stripping every card and separating areas with whitespace alone was tried and rejected: it lost hierarchy and read as unfinished. The fault was never the card, it was the nesting.
+- **Never a frame inside a frame.** No card around a component that brings its own border, no card of cards. Inside a card, charts are borderless and a table goes **flush**: edge to edge, no side or bottom border, only the rule under the card header; align its first/last cell inset with the header (`ps-6` / `pe-6`) and let `overflow-hidden` clip it to the radius.
+- **Summary numbers share one card.** Three KPIs are one card with a three-column `dl`, not three cards.
+- **Shadow one step lighter than the library default** (`shadow-sm` → `shadow-xs`). The border does the edge; the shadow only lifts.
+- Give the pattern a name (`Panel`: card + title + optional trailing action + content) so pages compose it instead of re-deriving `CardHeader` paddings per page.
+
+### Alignment between siblings
+
+- **Page padding is uniform on all sides.** `p-4 md:px-6` makes the gap under the top bar smaller than the gutter — use `p-4 md:p-6`, and give the sticky header the same horizontal inset so its first control lines up with the cards. Card-to-card gap matches the gutter (`gap-6`). Measure, don't eyeball: every gap was 24px once fixed.
+- **Panels in one row start their content on the same line.** Fix the header's minimum height (`min-h-9`) so a panel with a trailing button and one without are equally tall, shrink header actions to `size="sm"`, and don't give only one sibling a description line.
+- **Parallel structure, parallel rhythm.** Sibling panels use the same body shape — label → value pairs (`dl`, `space-y-4` between, `space-y-2` within) — and values share a minimum height (`min-h-6`) so a pill badge doesn't push its row 2px lower than plain text. One giant number beside a column of small values breaks the row; match the value size.
+- **Symmetric space around a title.** A header followed by a flush table stacks card padding, header min-height and the header gap; trim the card's top padding (`pt-4`) until the space above and below the title is equal (27px / 27px), rather than loosening blindly.
+
+### Charts
+
+- **Chart text is small and neutral.** Axis ticks, legend and tooltip are all 12px; tick labels take the muted foreground. Library defaults that inherit the 16px body size look oversized next to the axis.
+- **Series color marks a dot, never the text.** Legend and tooltip labels are neutral; a `size-2 rounded-full` dot carries the series color. Fully saturated colored labels read as loud and unprofessional.
+- **Render legend and tooltip yourself** when the library's versions can't be spaced: a legend row with `gap-2` dot-to-label and `gap-x-4` between items; a tooltip on popover tokens (`bg-popover`, `border`, `rounded-lg`, `px-3 py-2`) with the date in bold, `space-y-2` before the list and `space-y-1.5` between rows of dot + muted label + right-aligned `tabular-nums` value.
+- Tooltip values use thousands separators; the hover cursor line uses the border color.
 
 ## Responsive: recompose, don't just stack
 
@@ -207,11 +233,13 @@ Before showing a design, verify each:
 12. On a phone: is the card chrome gone, is text start-aligned, did elements move to where they belong rather than just stacking?
 13. Is every raster image going through `<Image>` with `densities`, and is decorative art inert (`alt=""`, `aria-hidden`, `pointer-events-none`) and faint (~7%)?
 14. Favicon set, `apple-touch-icon` and OG card replaced with the project's own?
-15. Does it look tight? → loosen one step and re-check.
+15. Does it look tight? → loosen one step and re-check. Does it look *lost* — cards all removed, hierarchy gone? → bring back one frame per area.
+16. Dashboard: any frame nested in a frame (card around a bordered table, card of cards)? Are sibling panels' titles and first rows on the same y? Is page padding equal on all sides?
+17. Charts: is every label 12px and neutral, with color only on the series dots?
 
 ## Evidence
 
-This design language is distilled from four shipped public GitHub projects, which serve as reference implementations whenever a local clone is at hand (typically `~/Projects/<name>`):
+This design language is distilled from four shipped public GitHub projects plus one admin panel, which serve as reference implementations whenever a local clone is at hand (typically `~/Projects/<name>`):
 
 | Project | Stack | What it establishes |
 | --- | --- | --- |
@@ -219,5 +247,6 @@ This design language is distilled from four shipped public GitHub projects, whic
 | `tcdw/blog` | Astro + Tailwind v4 | The same `@theme` in a real site: dark mode, banner/backdrop composition, the favicon set |
 | `bilisound/bilisound` | Expo + NativeWind + gluestack-ui | The roles in a React Native app: teal primary (`#00ba9d`), radius vocabulary, interaction states, ramp-flipping dark mode |
 | `tcdw/im.tcdw.net` | Astro + Tailwind v4 | A single dense print-first sheet: responsive recomposition, print-aware links, faint identity artwork, OG card |
+| `plasticwan` (`apps/admin-next`) | Vite + React + Tailwind v4 + shadcn/ui | A dashboard tuned on shadcn defaults: restrained card panels, flush tables, sibling alignment, quiet charts |
 
-Provenance for the rules that cite specific values: the profile sheet went from an agent's first draft (`e1b9360`: serif name, orange top bar, `#fffdfa` paper, `mm` everywhere, English kickers) through a hand-restyle that pulled it back to this language (`7bc93fc`) to the shipped page (`c6e9ada`) — accent removed, three sections subtracted, print-aware links, hand-tuned corner artwork, mobile recomposition, the image pipeline, a web font that actually loads, and a hand-made favicon + OG card. Extend this file when a new project produces a new correction; do not generalize from a single ambiguous edit.
+Provenance for the rules that cite specific values: the profile sheet went from an agent's first draft (`e1b9360`: serif name, orange top bar, `#fffdfa` paper, `mm` everywhere, English kickers) through a hand-restyle that pulled it back to this language (`7bc93fc`) to the shipped page (`c6e9ada`) — accent removed, three sections subtracted, print-aware links, hand-tuned corner artwork, mobile recomposition, the image pipeline, a web font that actually loads, and a hand-made favicon + OG card. The dashboard rules come from one hand-review of the Plastic Wan overview page (`29c3628`): an all-whitespace draft with every card removed was rejected for losing hierarchy, then cards came back one per area with lighter shadow, followed by corrections to uneven page padding, oversized and oversaturated chart text, cramped legend/tooltip spacing, misaligned sibling panels and an oversized title band above a flush table. Extend this file when a new project produces a new correction; do not generalize from a single ambiguous edit.
