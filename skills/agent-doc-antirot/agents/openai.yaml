@@ -1,4 +1,4 @@
 interface:
   display_name: "文档防腐检查"
   short_description: "核对文档与源码事实，隔离历史设计，收敛重复清单并验证导航与契约"
-  default_prompt: "使用 $docs-antirot 检查当前仓库的文档事实、历史资料边界与重复内容，先报告证据，再按确认范围修正。"
+  default_prompt: "使用 $agent-doc-antirot 检查当前仓库的文档事实、历史资料边界与重复内容，先报告证据，再按确认范围修正。"
