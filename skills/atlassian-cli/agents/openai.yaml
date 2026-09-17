@@ -1,0 +1,4 @@
+interface:
+  display_name: "Atlassian CLI"
+  short_description: "用 acli 查看、搜索和更新 Jira 工作项与 Confluence 页面"
+  default_prompt: "使用 $atlassian-cli 查看这个 Jira 工作项的详情、状态与评论，并总结要点。"

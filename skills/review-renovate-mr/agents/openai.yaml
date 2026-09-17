@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review Renovate MR"
+  short_description: "审查 Renovate 升包 MR 的 changelog、破坏性变更与项目影响，判断能否合并"
+  default_prompt: "使用 $review-renovate-mr review 当前分支关联的 Renovate 升包 MR，给出风险评估与合并建议。"
+policy:
+  allow_implicit_invocation: false

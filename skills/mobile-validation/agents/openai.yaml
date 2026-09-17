@@ -1,0 +1,6 @@
+interface:
+  display_name: "真机验证"
+  short_description: "在 React Native 真机或模拟器上运行并验证当前改动，收集截图等证据"
+  default_prompt: "使用 $mobile-validation 在可用设备上验证当前改动，操作相关界面并汇报结果与证据。"
+policy:
+  allow_implicit_invocation: false

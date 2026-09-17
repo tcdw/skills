@@ -1,0 +1,4 @@
+interface:
+  display_name: "omp 添加模型供应商"
+  short_description: "为 oh-my-pi 配置、导入或排查自定义模型供应商，并做端点探测与冒烟测试"
+  default_prompt: "使用 $omp-add-provider 把这个供应商配置加入 ~/.omp/agent/models.yml，探测端点并完成冒烟测试。"

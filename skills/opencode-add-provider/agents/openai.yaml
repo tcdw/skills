@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenCode 添加模型供应商"
+  short_description: "为 OpenCode 配置、导入或排查自定义模型供应商，合并配置并端到端验证"
+  default_prompt: "使用 $opencode-add-provider 把这个供应商合并进 opencode.json，补全模型元数据并完成冒烟测试。"

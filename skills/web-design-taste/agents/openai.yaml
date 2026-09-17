@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Design Taste"
+  short_description: "克制、圆润、留白充足的 Web 与 React Native 视觉设计语言"
+  default_prompt: "使用 $web-design-taste 为这个页面设计或调整视觉样式，并在交付前按规则自查。"

@@ -1,0 +1,6 @@
+interface:
+  display_name: "闷头干完"
+  short_description: "分析后直接执行到底，只在触及红线时才停下询问"
+  default_prompt: "使用 $just-do-it 把这个任务完整做完并验证，最后汇报改动、决策理由与未完成项。"
+policy:
+  allow_implicit_invocation: false
