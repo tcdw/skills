@@ -1,84 +1,126 @@
 ---
 name: comment-why-not-what
-description: Code-commenting discipline that forbids restating What/How and only allows Why-comments (workarounds, hidden constraints, intentional "looks like a bug", performance/safety reasoning, irreversible side-effect boundaries). Use whenever writing, adding, or editing inline code comments / JSDoc / TODO markers in any language. Also use during code review when judging whether a comment should exist at all.
+description: On-demand code-comment review and cleanup. Audits inline comments, JSDoc/docstrings, and TODO markers against a "comments explain Why, code explains What" rubric, then reports keep/rewrite/delete/refactor verdicts or applies comment-only fixes. Use ONLY when the user explicitly asks to review, audit, lint, clean up, prune, or tidy comments (e.g. "review the comments in this diff", "clean up comments in src/foo", "注释 review", "清理注释", "删掉废话注释"). Do NOT use for general code review, for writing new code, or for generating API documentation.
 ---
 
 # Comment Why, Not What
 
-> Comments only answer **Why**. Code answers **What** and **How**. If naming or structure can express it, do not comment.
+A focused pass over code comments. Two modes:
 
-## Why this rule exists
+- **Review** — report findings with verdicts; do not edit files.
+- **Cleanup** — apply the verdicts as comment-only edits, then verify nothing else changed.
 
-Comments are **patches, not documentation** — they exist to cover what code itself cannot express.
+Pick the mode from the request. "review / audit / check / 看看" → Review. "clean up / prune / fix / 清理 / 删掉" → Cleanup. If unclear, run Review and offer Cleanup at the end.
 
-If a piece of code can be made understandable through renaming, extracting a function, or restructuring, do not write a comment. Comments are the last fallback, not the first choice. Code changes; comments do not follow. The more comments you write, the higher the probability they rot.
+## Workflow
 
-## When comments MUST be written
+### 1. Fix the scope
 
-When a reader would stop and ask **"is this a bug?"** or **"why isn't this simpler?"**, you must answer them on that exact line:
+Resolve in this order and state the scope in the output:
 
-- **Counter-intuitive workarounds / hacks** — code that reads like "is this a bug?"
-- **Hidden external constraints** — BE / upstream / historical reasons forcing a non-obvious shape
-- **Intentional "looks like a bug"** — `eslint-disable`, deliberately omitted `useEffect` deps, etc.
-- **Performance / safety considerations** — the shape looks suboptimal but is chosen for a reason
-- **Irreversible side-effect boundaries** — `dropTable`, `forcePush`, destructive migrations, etc.
+1. Paths, files, or a PR/branch the user named.
+2. Otherwise the current change: `git diff` + `git diff --staged` (and untracked files if relevant). In a diff, judge **added or modified comments**; mention pre-existing ones in touched hunks only when clearly harmful.
+3. Whole-repo sweeps only when asked. Then sample by directory and cap the report; say what was not covered.
 
-## When comments MUST NOT be written
+Skip vendored code, generated files, lockfiles, build output, and fixtures that assert on comment text.
 
-- **Restating code semantics** (`counter += 1` does **not** need `// increment by 1`)
-- **Repeating the function signature** (TS already wrote it; JSDoc must not copy it again)
-- **Referencing the current task / PR / issue** (belongs in commit message / PR description / git blame)
-- **Ownerless, trigger-less `TODO` / `FIXME`** (an ownerless TODO = zero TODOs)
-- **Explaining history** (`// used to be lodash, switched to native` — `git log` is the truth of history)
-- **JSDoc duplicating TS types** (only add semantics types cannot express: unit, range constraint, call-site constraint)
+### 2. Read the repo's conventions first
 
-## Writing rules
+Check `AGENTS.md` / `CLAUDE.md` / `CONTRIBUTING`, lint config, and a few existing files. Repo rules win over this skill — e.g. if the repo mandates JSDoc on every export, or uses `NOTE:` as a convention, do not flag those.
 
-- Write **Why**, never **What**
-- Write the **question the reader would ask**, not the thing the author wants to say. For every comment, self-check: *what would the reader ask seeing this? am I answering it?*
-- The comment should be **shorter than the code** it annotates. If the comment is longer, the code needs refactoring.
-- Do not write "obviously", "simply", "trivial" — these words presume the reader's level.
-- Avoid future-tense promises. *"Temporary `setTimeout`, will switch to RAF later"* — "temporary" living in the codebase for ten years is the norm.
+### 3. Collect comments
 
-## Division of labor with other channels
+Use the diff, or search by language comment syntax (`//`, `/* */`, `#`, `--`, `"""`, `<!-- -->`). Read each comment **together with the code it annotates** — a verdict made from the comment alone is not valid.
 
-Comments only carry the **Why** slot, which is actually small:
+### 4. Classify each comment
 
-| Information type           | Where it lives                          |
-| -------------------------- | --------------------------------------- |
-| What (what it does)        | The code itself (naming, structure)     |
-| Why (why this way)         | Comments                                |
-| History of changes         | `git log` / PR description              |
-| Design decision reasoning  | spec / RFC                              |
-| Team conventions           | `AGENTS.md` / `CLAUDE.md` / lint rules  |
-| Temporary tasks            | Issue tracker / `TODO` with owner       |
-| Current task context       | Commit message                          |
+Assign exactly one verdict:
 
-## Marker conventions
+| Verdict      | When                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| **Keep**     | Answers a Why the reader would actually ask (see "Must keep").                                          |
+| **Rewrite**  | Has a real Why buried in What, is longer than needed, or uses a vague marker. Provide the new text.     |
+| **Delete**   | Restates code/signature, narrates history, references the task/PR, or is an ownerless TODO.             |
+| **Refactor** | Exists only because a name or structure is unclear. Propose the rename/extraction that removes it.      |
+| **Move**     | Real information in the wrong channel (history → commit message, plan → issue, convention → lint/AGENTS.md). |
+| **Ask**      | Cannot tell whether the Why is still true (possible stale workaround, unknown external constraint).     |
 
-Only the following semantically clear markers are allowed:
+Commented-out code is its own finding: recommend deletion (git keeps it) unless a Why explains why it must stay visible.
 
-- `HACK:` — counter-intuitive but necessary workaround
-- `SAFETY:` — explains why unsafe code is safe **in this context**
-- `PERF:` — explains the performance reason behind a non-intuitive shape
-- `TODO(owner, trigger):` — must have an **owner** and a **trigger condition**
+### 5. Report (Review mode)
 
-Forbidden because their semantics are vague: `XXX`, `FIXME`, `NOTE`.
+Group by file, most harmful first (misleading/stale > noise). Per finding:
 
-## Minimum memorable version
+```text
+path/to/file.ts:42  Delete
+  // increment retry counter
+  Reason: restates `retries += 1`.
 
-1. Comments answer **Why**, not **What**.
-2. If you can't write a **Why**, don't write a comment — refactor the code.
-3. Don't reference task numbers, don't write history, don't write future plans.
+path/to/file.ts:88  Rewrite
+  - // wait 50ms
+  + // HACK: Safari fires `resize` before layout settles; 50ms avoids reading stale width.
+  Reason: the delay is the non-obvious part; the comment said what, not why.
+```
 
-## Agent behavior checklist
+Close with counts per verdict, the scope covered, and any **Ask** items as explicit questions. For large scopes, list the top findings and summarize the rest by pattern rather than dumping every line.
 
-Before emitting any comment, the agent must run through:
+### 6. Apply (Cleanup mode)
 
-1. Does this comment answer a **Why** the reader would actually ask? If no → delete it.
-2. Could renaming a variable / extracting a function / reshaping the code remove the need for this comment? If yes → refactor instead.
-3. Does this comment restate the code, the signature, the task number, or the history? If yes → delete it.
-4. If it is a `TODO`, does it carry an **owner** and a **trigger condition**? If no → either complete it or delete it.
-5. Is the comment longer than the code it annotates? If yes → either tighten the comment or refactor the code.
+- Edit **comments only**. **Refactor** verdicts change code, so apply them only when the user authorized refactoring; otherwise leave the comment and list the proposal.
+- Never invent a Why. If the reason is unknown, mark it **Ask** and leave the comment untouched rather than guessing.
+- Leave **Ask** and **Move** items in place; list them for the user (draft the commit/issue text for Move if useful).
+- Preserve formatting: remove the now-empty comment lines without leaving stray blank lines or breaking indentation.
+- Verify:
+  1. Read the final diff; every hunk must be comment-only (or an authorized refactor).
+  2. Run `git diff --check` and the repo's formatter/linter on touched files.
+  3. If any directive-adjacent line or doc-generation comment changed, run the type check / relevant tests.
+- Summarize: counts per verdict applied, items left for the user, and checks run vs. not run. Do not commit unless asked.
 
-Apply the same checklist when reviewing existing comments in a diff. Recommend deletion or rewriting for any comment that fails the checklist.
+## Rubric
+
+### Must keep (or add when the user asks)
+
+A reader would stop and ask **"is this a bug?"** or **"why isn't this simpler?"**:
+
+- Counter-intuitive workarounds / hacks
+- Hidden external constraints (backend, upstream bug, spec quirk, platform limit)
+- Intentional "looks like a bug" (deliberately omitted deps, swallowed error, odd ordering)
+- Performance or safety reasoning behind a non-obvious shape
+- Irreversible side-effect boundaries (destructive migrations, force pushes, deletes)
+- Semantics types cannot express: units, ranges, call-order or threading constraints
+
+### Delete or rewrite
+
+- Restating code semantics (`counter += 1  // increment`)
+- Repeating the signature; JSDoc/docstrings that only mirror parameter types
+- Task / PR / issue / ticket references as explanation (belongs in commit message or blame)
+- History (`// used to use lodash`) — `git log` is the source of truth
+- Ownerless, trigger-less `TODO` / `FIXME`
+- Future promises (`// temporary, will switch to RAF later`)
+- Presumptive words: "obviously", "simply", "just", "trivial"
+- A comment longer than the code it annotates → tighten it or refactor the code
+
+### Markers
+
+Preferred: `HACK:`, `SAFETY:`, `PERF:`, `TODO(owner, trigger):`. Flag `XXX`, `FIXME`, bare `NOTE` as **Rewrite** — unless the repo's own convention uses them. Do not mass-rename markers during Cleanup unless asked.
+
+## Never touch
+
+These look like comments but are not prose. Do not delete or reword them, even if they "restate" something:
+
+- Tool directives: `eslint-disable*`, `@ts-expect-error`, `@ts-ignore`, `biome-ignore`, `prettier-ignore`, `istanbul ignore`, `c8 ignore`, `# noqa`, `# type: ignore`, `# pragma`, `// nolint`, `#[allow]`-style pragmas, `rubocop:disable`
+- Build/compiler directives: `//go:build`, `//go:generate`, `// +build`, `/// <reference>`, `#region`, `@jsx` pragmas, magic comments like `# frozen_string_literal`, `-*- coding -*-`
+- Shebangs, license/copyright headers, SPDX lines
+- Doc comments that feed generated public API docs (TypeDoc, rustdoc, godoc on exported symbols, Sphinx) — tighten them if they only mirror types, but do not remove the doc surface
+- Comments asserted by tests, snapshots, or codegen markers (`// @generated`, `<!-- BEGIN ... -->`)
+
+A directive may still lack a reason — e.g. `eslint-disable-next-line` with no Why. Suggest appending one (`-- reason`), but keep the directive.
+
+## Self-check scenarios
+
+- "Review the comments in my diff" → Review mode on the diff; no edits.
+- "清理 src/utils 的注释" → Cleanup on that path; comment-only edits; Refactor proposals listed, not applied.
+- `// @ts-expect-error` with no explanation → keep the directive, suggest adding a reason.
+- `// wait for animation` above `setTimeout(fn, 300)` with no known cause → **Ask**, do not fabricate a Why.
+- Repo `AGENTS.md` requires JSDoc on every export → do not flag those JSDoc blocks as signature duplicates; only flag type-mirroring content inside them.
+- User asks for a general code review → this skill does not apply.

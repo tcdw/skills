@@ -1,0 +1,4 @@
+interface:
+  display_name: "注释专项 Review 与清理"
+  short_description: "按 Why-not-What 标准审查注释，给出保留/改写/删除/重构结论，按需只改注释并验证"
+  default_prompt: "使用 $comment-why-not-what 审查当前改动中的代码注释，先按文件报告结论与理由；确认后再做只改注释的清理。"

@@ -81,7 +81,7 @@ See `docs/authoring.md` for the local conventions used when adding or editing sk
 | Skill | 一句话介绍 |
 | --- | --- |
 | `atlassian-cli` | 通过 `acli` 命令行查看、搜索、更新 Jira issue 和 Confluence 页面。 |
-| `comment-why-not-what` | 注释纪律：只写解释 Why 的注释、禁止复述 What/How，写注释或 review 注释时使用。 |
+| `comment-why-not-what` | 按需的注释专项 review 与清理：按 Why-not-What 标准给出保留/改写/删除/重构结论，review 只报告，清理只改注释并验证。 |
 | `just-do-it` | 把任务执行到底而不是停在分析阶段，用于「帮我升级依赖 / 重构 / 修复」等有明确交付预期的任务。 |
 | `omp-add-provider` | 为 oh-my-pi (omp) 配置第三方模型提供商，包括 OpenAI 兼容中转、Anthropic 代理、双 key 网关等。 |
 | `review-renovate-mr` | 以资深前端工程师视角审查 Renovate 生成的 `feature/renovate-*` 依赖升级 MR。 |
