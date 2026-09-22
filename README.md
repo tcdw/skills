@@ -87,3 +87,4 @@ See `docs/authoring.md` for the local conventions used when adding or editing sk
 | `review-renovate-mr` | 以资深前端工程师视角审查 Renovate 生成的 `feature/renovate-*` 依赖升级 MR。 |
 | `mobile-validation` | 在 React Native 项目的真实设备或模拟器上运行并验证当前改动。 |
 | `web-design-taste` | 中立的视觉设计语言（语义色别名、圆润无衬线、克制用色、暗色一等公民），做界面或 review 设计稿时使用。 |
+| `write-devlog` | 为任意仓库编写开发日志：背景、变更、验证与提交 hash，代码与日志分两次提交。 |

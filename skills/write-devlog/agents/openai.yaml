@@ -1,0 +1,4 @@
+interface:
+  display_name: "编写开发日志"
+  short_description: "基于真实 diff、验证结果与提交 hash 记录一次改动，代码与日志分两次提交"
+  default_prompt: "使用 $write-devlog 为这次改动编写开发日志，引用真实 diff、验证结果和代码提交 hash，再单独提交日志。"
