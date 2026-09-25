@@ -1,0 +1,4 @@
+interface:
+  display_name: "tcdw 文风润色"
+  short_description: "按 tcdw 2020–2024 年的文风润色博文、推文和文档：轻改自己的粗稿，或去掉 AI 稿的 AI 腔"
+  default_prompt: "使用 $tcdw-polish 润色这篇稿子，改成 tcdw 自己的口吻，并说明改了哪些地方。"
