@@ -1,0 +1,4 @@
+interface:
+  display_name: "T3 委派与审阅"
+  short_description: "经 T3 Code 把需求派给 Pi/Codex 等子 agent 在独立 worktree 实现，ocr 审阅、打回修正，主会话复验后交付"
+  default_prompt: "使用 $t3-delegate-review 把这个需求派给子 agent 实现，用 ocr 审阅并核实意见、打回修正，亲自复验后按仓库规则交付。"
