@@ -3,7 +3,7 @@
 
 Usage: python3 -I default_model.py <agent> [--cwd <workspace>]
 
-<agent> is a T3 providerInstanceId or driverKind: opencode, codex, claudeAgent/claude.
+<agent> is a T3 providerInstanceId or driverKind: pi, opencode, codex, claudeAgent/claude.
 Output: {"agent", "model", "options", "source", "note"}; "model" is null when unknown.
 The model id is what the agent's own config says; confirm it against the T3 catalog
 (orchestrator_capabilities with search=<model>) before launching.
@@ -19,6 +19,30 @@ from pathlib import Path
 
 def result(agent, model=None, options=None, source=None, note=None):
     return {"agent": agent, "model": model, "options": options or {}, "source": source, "note": note}
+
+
+def pi(cwd):
+    # Pi reads <agent-dir>/settings.json, then the project's .pi/settings.json, whose keys override the global ones.
+    agent_dir = Path(os.environ.get("PI_CODING_AGENT_DIR") or Path.home() / ".pi/agent")
+    merged, sources = {}, []
+    for path in (agent_dir / "settings.json", Path(cwd) / ".pi/settings.json"):
+        try:
+            doc = json.loads(path.read_text())
+        except (OSError, ValueError):
+            continue
+        if isinstance(doc, dict):
+            merged.update(doc)
+            sources.append(str(path))
+    provider, model = merged.get("defaultProvider"), merged.get("defaultModel")
+    if not isinstance(model, str) or not model:
+        return result("pi", source=", ".join(sources) or None, note="no defaultModel in Pi settings")
+    full = f"{provider}/{model}" if isinstance(provider, str) and provider else model
+    levels = merged.get("modelThinkingLevels")
+    level = (levels.get(full) if isinstance(levels, dict) else None) or merged.get("defaultThinkingLevel")
+    options = {"thinking": level} if isinstance(level, str) and level else {}
+    # A project file only applies once Pi trusts the project; T3 children may not have that trust.
+    note = "includes project .pi/settings.json, which Pi applies only to trusted projects" if len(sources) > 1 else None
+    return result("pi", full, options, ", ".join(sources), note)
 
 
 def opencode(cwd):
@@ -81,7 +105,9 @@ def main():
         sys.exit(__doc__)
     agent = args[0].lower()
     cwd = args[args.index("--cwd") + 1] if "--cwd" in args else os.getcwd()
-    if agent == "opencode":
+    if agent == "pi":
+        out = pi(cwd)
+    elif agent == "opencode":
         out = opencode(cwd)
     elif agent == "codex":
         out = codex()

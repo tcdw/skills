@@ -7,9 +7,9 @@
 ```markdown
 # Task: <一句话目标>
 
-You are working in the git worktree `<worktree 绝对路径>` (branch `<分支>`, based on `<base ref 与短 hash>`, dependencies already installed). Work ONLY inside this worktree; do not touch `<主 checkout 绝对路径>`. Do NOT commit, push or open a PR — leave the changes uncommitted; they will be code-reviewed afterwards.
+You are working in your own git checkout (your current working directory), created for this task from `<base ref 与短 hash>`. Work ONLY inside it; do not touch the main checkout at `<主 checkout 绝对路径>`. If dependencies are not installed yet, run `<安装命令，例如 pnpm install --frozen-lockfile>` first. Do NOT commit, push or open a PR — leave the changes uncommitted; they will be code-reviewed afterwards.
 
-Read `<AGENTS.md 等入口文档>` at the worktree root first and follow its coding style, testing and <相关子系统> rules.
+Read `<AGENTS.md 等入口文档>` at the root of your checkout first and follow its coding style, testing and <相关子系统> rules.
 
 ## Goal
 
@@ -17,7 +17,7 @@ Read `<AGENTS.md 等入口文档>` at the worktree root first and follow its cod
 <目标：要变成什么样>
 
 Reference (read these; they are the design spec):
-- `<参照文件绝对路径>` — <看它的什么>
+- `<参照文件，相对 checkout 根目录的路径>` — <看它的什么>
 
 Behaviour to reproduce:
 1. <可验证的行为 1>
@@ -30,14 +30,14 @@ Behaviour to reproduce:
 - <仓库硬规则里与这次改动相关的几条，逐条点名>
 - <文案 / i18n / 设计 token 要求>
 
-## Verification (run all, from the worktree)
+## Verification (run all, from your checkout)
 
 - <新增或要更新的测试：断言什么>
 - `<命令 1>`, `<命令 2>`, ...
 
 ## Final report
 
-Reply with: files changed (one line each, what and why), the exact verification commands you ran with pass/fail, anything you could not run, and any deviation from the reference and why.
+Start with your checkout's absolute path, its branch (`git branch --show-current`) and `git rev-parse --short HEAD`. Then reply with: files changed (one line each, what and why), the exact verification commands you ran with pass/fail, anything you could not run, and any deviation from the reference and why.
 ```
 
 ## 修正轮（review 意见）
@@ -45,7 +45,7 @@ Reply with: files changed (one line each, what and why), the exact verification 
 ```markdown
 # Review follow-up: fix <N> findings
 
-A code review of your uncommitted changes in this worktree found the issues below (each verified against the code). Fix them in the same worktree. Still do NOT commit, push or open a PR.
+A code review of your uncommitted changes in your checkout found the issues below (each verified against the code). Fix them in the same checkout. Still do NOT commit, push or open a PR.
 
 ## 1. <标题> — `<文件>` (~line <行号>)
 
@@ -62,7 +62,7 @@ Fix: <修正方向；如果有多种合理修法，说清约束，让它自己�
 ## Verification
 
 Write the new regression tests so they fail on the current code before your fix, then pass after it; say in your report that you confirmed this.
-Re-run from the worktree: `<命令>`, ...
+Re-run from your checkout: `<命令>`, ...
 
 Report: what you changed per finding, the exact commands with pass/fail, and whether the new tests failed before the fix.
 ```
