@@ -29,11 +29,14 @@ Behaviour to reproduce:
 - <只移植什么、不要移植什么>
 - <仓库硬规则里与这次改动相关的几条，逐条点名>
 - <文案 / i18n / 设计 token 要求>
+- Commit gates: the changes will be committed later through the repo's hooks, which check <hook 检查的内容，例如 every staged file ≤ 20,000 bytes / formatting / commit message>. Keep every file within them from the start (split a file along its responsibilities rather than shrinking text), and before your final report stage your changes and run `<hook 背后可单独运行的检查命令>`.
 
-## Verification (run all, from your checkout)
+## Verification (from your checkout)
 
 - <新增或要更新的测试：断言什么>
-- `<命令 1>`, `<命令 2>`, ...
+- While iterating: `<lint>`, `<类型检查>` and the tests that cover what you changed.
+- Once, right before your final report: `<全量测试>`<, `<其他慢验证，例如文档构建>`>. Run the full suite only this once (it takes about <耗时>).
+- If a failure looks unrelated to your change, run that one test file on its own, then list it in your report and move on. Do NOT stash or check out the base to re-run the suite; the main session checks such failures against the base.
 
 ## Final report
 
@@ -62,7 +65,9 @@ Fix: <修正方向；如果有多种合理修法，说清约束，让它自己�
 ## Verification
 
 Write the new regression tests so they fail on the current code before your fix, then pass after it; say in your report that you confirmed this.
-Re-run from your checkout: `<命令>`, ...
+Re-run from your checkout: `<lint>`, `<类型检查>` and the affected tests (`<测试路径>`). Do NOT run the full suite this round; the main session runs it before delivery.
+Known failures on the base commit, not caused by you: <基线里的失败用例；没有就写 none>.
+<如果改动会增减文件或改动大文件：Keep the commit gates from the first task (<例如 every file ≤ 20,000 bytes>); run `<检查命令>` on your staged changes.>
 
 Report: what you changed per finding, the exact commands with pass/fail, and whether the new tests failed before the fix.
 ```
@@ -82,5 +87,5 @@ Find the root cause first: is it the test racing <某个状态变化>, or a real
 
 Do NOT commit, push or open a PR.
 
-Verify: `<多轮重复命令，例如 --repeat-each 10>` must pass with zero failures, plus `<其余命令>`. Report the root cause you found, what you changed, and the command results.
+Verify: `<多轮重复命令，例如 --repeat-each 10>` must pass with zero failures, plus `<其余命令>`<；仅当这次失败来自完整层验证时加上：and then `<全量测试>` once>. Report the root cause you found, what you changed, and the command results.
 ```
